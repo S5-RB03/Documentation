@@ -4,8 +4,10 @@
 
 1. [Inleiding](#inleiding)
 2. [Functionele eisen](#functionele-eisen)
-3. [Niet functionele eisen](#niet-functionele-eisen)
-4. [Software kwaliteit](#software-kwaliteit)
+3. [Software kwaliteit](#software-kwaliteit)
+4. [Niet functionele eisen](#niet-functionele-eisen)
+5. [Tech stack](#tech-stack)
+6. [Architectuur](#architectuur)
 5. [Bronnen](#bronnen)
 
 
@@ -85,7 +87,15 @@ Voor nu heb ik de keuze gemaakt om Kassandra, PostgreSQL en mongoDB te gaan gebr
 **Cache**
 Voor de cache wil ik Redis gaan gebruiken. Dit is een in-memory database die snel is en veel gebruikt wordt. Daarnaast is het een goede toevoeging voor mijn portfolio.
 
-**Messaging**
+## Architectuur
+
+### C2 Diagram
+
+Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diagram gemaakt. Dit diagram laat zien waar de verschillende containers zich bevinden en welke met elkaar communiceren. In deze diagram zijn geolocaties en schaalbaarheid nog niet toegevoegd.
+
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/73841047/221862051-ebb3d635-ce10-4e14-b2ef-1a46de72249a.png" alt="C2 diagram">
+</p>
 
 
 
