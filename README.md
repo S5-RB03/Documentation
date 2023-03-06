@@ -94,8 +94,9 @@ Voor de cache wil ik Redis gaan gebruiken. Dit is een in-memory database die sne
 Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diagram gemaakt. Dit diagram laat zien waar de verschillende containers zich bevinden en welke met elkaar communiceren. In deze diagram zijn geolocaties en schaalbaarheid nog niet toegevoegd.
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/73841047/221862051-ebb3d635-ce10-4e14-b2ef-1a46de72249a.png" alt="C2 diagram">
+    <img src="https://user-images.githubusercontent.com/73841047/223100894-253de0d8-5abd-4b76-996d-16253645d5bb.png" alt="C2 diagram">
 </p>
+
 
 
 
