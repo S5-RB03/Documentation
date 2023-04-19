@@ -97,6 +97,8 @@ Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diag
     <img src="https://user-images.githubusercontent.com/73841047/223100894-253de0d8-5abd-4b76-996d-16253645d5bb.png" alt="C2 diagram">
 </p>
 
+### RabbitMQ
+`docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 
 
 
