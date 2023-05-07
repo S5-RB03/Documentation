@@ -100,7 +100,8 @@ Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diag
 ### RabbitMQ
 `docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 
-
+### Keycloak
+`docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e DB_VENDOR=h2 jboss/keycloak`
 
 ## Bronnen
 

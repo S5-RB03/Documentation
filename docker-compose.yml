@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    networks:
+      - sevyh-network
+    ports:
+      - "9042:9042"
+    healthcheck:
+      test: ["CMD", "cqlsh", "--execute", "DESCRIBE KEYSPACES"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  my-app:
+    image: sevyh/chatservice:latest
+    container_name: chatservice
+    environment:
+      SPRING_DATA_CASSANDRA_CONTACT_POINTS: cassandra
+    ports:
+      - "3001:3001"
+    networks:
+      - sevyh-network
+    depends_on:
+      cassandra:
+        condition: service_healthy
+
+networks:
+  sevyh-network:
