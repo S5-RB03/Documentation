@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cassandra-init-db
+data:
+  init-db.cql: |-
+    CREATE KEYSPACE chatmessages_keyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+  cassandra-host: "cassandra.default.svc.cluster.local"
+  cassandra-port: "9042"

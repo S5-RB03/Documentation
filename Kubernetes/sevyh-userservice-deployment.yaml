@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sevyh-userservice-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sevyh-userservice
+  template:
+    metadata:
+      labels:
+        app: sevyh-userservice
+    spec:
+      containers:
+      - name: sevyh-userservice
+        image: jjuless/sevyhuserservice:latest
+        ports:
+        - containerPort: 3003
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sevyh-userservice
+spec:
+  type: ClusterIP
+  selector:
+    app: sevyh-userservice
+  ports:
+  - name: sevyh-userservice-port
+    protocol: TCP
+    port: 3003
+    targetPort: 3003

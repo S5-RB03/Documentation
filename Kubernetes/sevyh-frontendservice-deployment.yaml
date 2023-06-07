@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sevyh-frontendservice-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sevyh-frontendservice
+  template:
+    metadata:
+      labels:
+        app: sevyh-frontendservice
+    spec:
+      containers:
+      - name: sevyh-frontendservice
+        image: jjuless/sevyh-front-end:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sevyh-frontendservice
+spec:
+  type: ClusterIP
+  selector:
+    app: sevyh-frontendservice
+  ports:
+  - name: sevyh-frontendservice-port
+    protocol: TCP
+    port: 3004
+    targetPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sevyh-frontendservice-loadbalancer
+spec:
+  type: LoadBalancer
+  selector: 
+    app: sevyh-frontendservice
+  ports: 
+  - name: sevyh-frontendservice-lb-port
+    protocol: TCP
+    port: 3004
+    targetPort: 80
