@@ -15,6 +15,11 @@ spec:
       containers:
       - name: sevyh-frontendservice
         image: jjuless/sevyh-front-end:latest
+        env:
+          - name: VITE_API_URL
+            value: http://sevyh-chatservice.default.svc.cluster.local:3001
+          - name: VITE_KEYCLOAK_URL
+            value: http://keycloak.default.svc.cluster.local:8080
         ports:
         - containerPort: 80
         resources:
