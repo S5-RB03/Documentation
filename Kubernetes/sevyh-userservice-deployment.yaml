@@ -1,22 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sevyh-userservice-deployment
+  name: sevyh-userbackend
 spec:
-  replicas: 3
   selector:
     matchLabels:
-      app: sevyh-userservice
+      app: user-backend
+      tier: backend
+      track: stable
+  replicas: 3
   template:
     metadata:
       labels:
-        app: sevyh-userservice
+        app: user-backend
+        tier: backend
+        track: stable
     spec:
       containers:
       - name: sevyh-userservice
         image: jjuless/sevyhuserservice:latest
         ports:
-        - containerPort: 3003
+        - name: http
+          containerPort: 3003
+        env:
+        - name: KEYCLOAK_AUTH-SERVER-URL
+          value: http://keycloak.default.svc.cluster.local:8080/auth
+        - name: KEYCLOAK_CREDENTIALS_SECRET
+          value: verysecret
+
         resources:
           limits:
             memory: "256Mi"
@@ -29,13 +40,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sevyh-userservice
+  name: sevyh-userbackend
 spec:
-  type: ClusterIP
   selector:
-    app: sevyh-userservice
+    app: user-backend
+    tier: backend
   ports:
-  - name: sevyh-userservice-port
-    protocol: TCP
+  - protocol: TCP
     port: 3003
     targetPort: 3003
+  type: LoadBalancer

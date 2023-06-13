@@ -1,0 +1,60 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus-operator
+  name: sevyh-userbackend
+spec:
+  endpoints:
+  - interval: 15s
+    targetPort: 3003
+    path: /actuator/prometheus
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      app: user-backend
+      tier: backend
+
+--- 
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus-operator
+  name: sevyh-chatbackend
+spec:
+  endpoints:
+  - interval: 15s
+    targetPort: 3001
+    path: /actuator/prometheus
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      app: chat-backend
+      tier: backend
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rabbitmq
+  labels:
+    release: prometheus-operator
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  endpoints:
+  - interval: 30s
+    path: /metrics
+    targetPort: 15692
+  namespaceSelector:
+    matchNames:
+    - default
+

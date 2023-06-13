@@ -1,22 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: keycloak-deployment
+  name: keycloak
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: keycloak
+      tier: backend
+      track: stable
+  replicas: 1
   template:
     metadata:
       labels:
         app: keycloak
+        tier: backend
+        track: stable
     spec:
       containers:
       - name: keycloak
         image: jboss/keycloak:latest
         ports:
-        - containerPort: 8080
+          - name: http
+            containerPort: 8080
         env: 
           - name: KEYCLOAK_USER
             value: admin
@@ -24,6 +29,11 @@ spec:
             value: admin
           - name: DB_VENDOR
             value: h2
+          - name: KEYCLOAK_IMPORT
+            value: /tmp/realm-export-sevyhauth.json 
+        volumeMounts:
+        - name: realm-config
+          mountPath: "/tmp"
         resources:
           limits:
             memory: "512Mi"
@@ -31,31 +41,21 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "500m"
+      volumes:
+      - name: realm-config
+        configMap:
+          name: realm-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: keycloak
 spec:
-  type: ClusterIP
   selector:
     app: keycloak
+    tier: backend
   ports:
-  - name: keycloak-port
-    protocol: TCP
+  - protocol: TCP
     port: 8080
-    targetPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-loadbalancer
-spec:
+    targetPort: http
   type: LoadBalancer
-  selector: 
-    app: keycloak
-  ports: 
-  - name: keycloak-lb-port
-    protocol: TCP
-    port: 80
-    targetPort: 8080

@@ -97,6 +97,30 @@ Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diag
     <img src="https://user-images.githubusercontent.com/73841047/223100894-253de0d8-5abd-4b76-996d-16253645d5bb.png" alt="C2 diagram">
 </p>
 
+## Monitoring
+
+Om er zeker van te zijn dat de applicatie blijft werken zoals verwacht, is het belangrijk om de applicatie te monitoren. Dit kan op verschillende manieren. In dit project zal ik gebruik maken van Prometheus. Prometheus is een monitoring tool die data verzameld van verschillende componenten.
+
+Hiermee wordt direct duidelijk wanneer iets niet goed werkt. Daarnaast is het mogelijk om alerts in te stellen. Wanneer een bepaalde waarde wordt overschreden, kan er een alert worden gestuurd naar een bepaalde persoon.
+
+Om Prometheus toe te voegen aan dit project, moet deze eerst worden binnengehaald via de package manager van Kubernetes, genaamd helm:
+
+`helm repo add prometheus-community https://prometheus-community.github.io/helm-charts`
+`helm repo update`
+
+Vervolgens kan Prometheus worden geïnstalleerd:
+
+`helm install prometheus-operator prometheus-community/kube-prometheus-stack`
+
+Om het dashboard van Prometheus te bekijken, moet er een port-forward worden gemaakt:
+
+`kubectl port-forward svc/prometheus-operator-kube-p-prometheus 9090:9090`
+
+Wanneer prometheus al eens eerder is gedeployed, dan kan het zijn dat de port-forward niet werkt In dat geval kan de volgende regel gebruikt worden:
+
+`helm upgrade -i prometheus-operator prometheus-community/kube-prometheus-stack`
+
+
 ### RabbitMQ
 `docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management`
 
