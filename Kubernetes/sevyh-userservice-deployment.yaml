@@ -8,7 +8,6 @@ spec:
       app: user-backend
       tier: backend
       track: stable
-  replicas: 3
   template:
     metadata:
       labels:
@@ -27,15 +26,13 @@ spec:
           value: http://keycloak.default.svc.cluster.local:8080/auth
         - name: KEYCLOAK_CREDENTIALS_SECRET
           value: verysecret
-
         resources:
           limits:
-            memory: "256Mi"
-            cpu: "500m"
+            memory: "300Mi"
+            cpu: "400m"
           requests:
             memory: "128Mi"
             cpu: "250m"
-        
 ---
 apiVersion: v1
 kind: Service
@@ -50,3 +47,29 @@ spec:
     port: 3003
     targetPort: 3003
   type: LoadBalancer
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sevyh-userbackend-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sevyh-userbackend
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70

@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    release: prometheus
+    release: prometheus-operator
   name: sevyh-userbackend
 spec:
   endpoints:
@@ -23,7 +23,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    release: prometheus
+    release: prometheus-operator
   name: sevyh-chatbackend
 spec:
   endpoints:

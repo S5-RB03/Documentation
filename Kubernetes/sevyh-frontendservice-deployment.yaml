@@ -61,18 +61,18 @@ spec:
     kind: Deployment
     name: sevyh-frontend
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 1
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 30
+        averageUtilization: 50
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: 30
+        averageUtilization: 50
 
