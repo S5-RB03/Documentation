@@ -82,7 +82,7 @@ Voor de front-end wil ik React gaan gebruiken, met de voornaamste reden om te le
 Voor de back-end wil ik Java met het framework Spring boot gaan gebruiken. Met zowel Java als Spring Boot heb ik al enige ervaring. Dit is mij vorige keer goed bevallen, dus hier wil ik mee doorgaan. Ook Java met Spring Boot wordt vaak gebruikt, dus het is een goede toevoeging voor mijn portfolio.
 
 **Databases**
-Voor nu heb ik de keuze gemaakt om Kassandra, PostgreSQL en mongoDB te gaan gebruiken. Dit is afhankelijk van de microservice. Deze uitleg zal ik later in de documentatie toevoegen.
+Voor nu heb ik de keuze gemaakt om Cassandra, PostgreSQL en mongoDB te gaan gebruiken. Dit is afhankelijk van de microservice. Deze uitleg zal ik later in de documentatie toevoegen.
 
 **Cache**
 Voor de cache wil ik Redis gaan gebruiken. Dit is een in-memory database die snel is en veel gebruikt wordt. Daarnaast is het een goede toevoeging voor mijn portfolio.
@@ -99,7 +99,7 @@ Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diag
 
 ## Monitoring
 
-Om er zeker van te zijn dat de applicatie blijft werken zoals verwacht, is het belangrijk om de applicatie te monitoren. Dit kan op verschillende manieren. In dit project zal ik gebruik maken van Prometheus. Prometheus is een monitoring tool die data verzameld van verschillende componenten.
+Om er zeker van te zijn dat de applicatie blijft werken zoals verwacht, veilig is is het belangrijk om de applicatie te monitoren. Dit kan op verschillende manieren. In dit project zal ik gebruik maken van Prometheus. Prometheus is een monitoring tool die data verzameld van verschillende componenten.
 
 Hiermee wordt direct duidelijk wanneer iets niet goed werkt. Daarnaast is het mogelijk om alerts in te stellen. Wanneer een bepaalde waarde wordt overschreden, kan er een alert worden gestuurd naar een bepaalde persoon.
 
@@ -108,9 +108,10 @@ Om Prometheus toe te voegen aan dit project, moet deze eerst worden binnengehaal
 `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts`
 `helm repo update`
 
-Vervolgens kan Prometheus worden geïnstalleerd:
+Vervolgens kan Prometheus worden geïnstalleerd met de value.yaml file. Deze yaml file is te vinden in de map prometheus:
 
-`helm install prometheus-operator prometheus-community/kube-prometheus-stack`
+`cd prometheus` 
+`helm install prometheus-operator prometheus-community/kube-prometheus-stack -f value.yaml`
 
 Om het dashboard van Prometheus te bekijken, moet er een port-forward worden gemaakt:
 
@@ -126,6 +127,31 @@ Wanneer prometheus al eens eerder is gedeployed, dan kan het zijn dat de port-fo
 
 ### Keycloak
 `docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e DB_VENDOR=h2 jboss/keycloak`
+
+## GPDR
+
+### Data
+
+#### Data verzameling
+
+De applicatie verzamelt de volgende persoonlijke data:
+- Voornaam
+- Achternaam
+- E-mailadres
+- Wachtwoord
+- Chatberichten
+
+#### Data gebruik
+
+Momenteel wordt het E-mailadres en het wachtwoord gebruikt in Keycloak om de gebruiker te kunnen identificeren. 
+
+De voor- en achternaam worden gebruikt in de front-end, zodat de gebruiker weet met wie hij/zij chat.
+
+De chatberichten worden gebruikt om de gebruiker te laten zien wat er in de chat is gezegd.
+
+#### Toestemming voor data
+
+Om de data te kunnen gebruiken van de gebruikers, moeten deze hier eerst toestemming voor geven. Dit is gebruikelijk om te vragen bij het aanmaken van een account. De data die verzameld wordt 
 
 ## Bronnen
 
