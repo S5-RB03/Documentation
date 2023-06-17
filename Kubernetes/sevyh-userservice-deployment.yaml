@@ -59,7 +59,7 @@ spec:
     kind: Deployment
     name: sevyh-userbackend
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 10
   metrics:
   - type: Resource
     resource:

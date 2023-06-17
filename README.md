@@ -60,7 +60,6 @@ Op basis van deze aspecten, is het mogelijk om goede niet functionele eisen te f
 **Beveiliging**
 -	Alle chatberichten tussen gebruikers moeten end-to-end versleuteld zijn.
 -	Applicatie moet beschermd zijn tegen de top 10 van OWASP.
--   Applicatie hanteert de 'zero trust' filosofie.
 
 **Betrouwbaarheid en beschikbaarheid**
 -	De applicatie moet een uptime hebben van 99,9% per jaar. Dit vertaalt in een maximale downtime van 8,77 uur per jaar of 1,44 minuten per dag.
@@ -94,7 +93,7 @@ Voor messaging heb ik RabbitMQ gebruikt. Dit is een message broker die gebruik m
 Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diagram gemaakt. Dit diagram laat zien waar de verschillende containers zich bevinden en welke met elkaar communiceren. In deze diagram zijn geolocaties en schaalbaarheid nog niet toegevoegd.
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/73841047/223100894-253de0d8-5abd-4b76-996d-16253645d5bb.png" alt="C2 diagram">
+    <img src="https://github.com/S5-RB03/Documentation/assets/73841047/e1c265bc-c612-4af5-8c03-49058d9bc9c4" alt="C2 diagram">
 </p>
 
 ## Monitoring
@@ -150,6 +149,20 @@ Lens is een tool die het mogelijk maakt om een Kubernetes cluster te beheren en 
 
 ## GPDR
 
+Om ervoor te zorgen dat de applicatie voldoet aan de GPDR, is er een GPDR checklist gemaakt. 
+
+| Regel | Oplossing | Controle | Opmerkingen |
+| ---- | -------- | :----: | -------- |
+| Toestemming | Verkrijg expliciete toestemming van gebruikers voordat hun persoonlijke gegevens verzameld worden. | ❌ | Momenteel wordt er geen expliciete toestemming gevraagd van gebruikers. |
+| Toegang tot gegevens, correctie en verwijdering | Implementeer een proces voor gebruikers om hun persoonlijke gegevens in te zien, te corrigeren of te verwijderen. | ❌ | Het is voor nu alleen mogelijk om gegeven in te vullen, maar niet het bekijken, bewerken of verwijderen. |
+| Protocol voor gegevensinbreuk | Een protocol om een inbreuk op persoonlijke gegevens te detecteren, te melden en te onderzoeken. | ❌ | Er is momenteel geen protocol voor gegevensinbreuk. |
+| Privacybeleid | Een duidelijk en transparant privacybeleid dat uitlegt hoe gebruikersgegevens worden gebruikt en beschermt. | ❌ | Er is momenteel geen privacybeleid. |
+| Gegevens van kinderen | Implementeer leeftijdsverificatie en een mechanisme om ouderlijke toestemming te verkrijgen als gegevens van kinderen onder de 16 worden verzameld. | ❌ | Er is momenteel geen leeftijd verificatie van de gebruiker of verkrijgt ouderlijke toestemming voor gebruikers onder de 16. |
+| Gegevensbeveiliging | Zorg ervoor dat de gegevens veilig worden opgeslagen. | ✅ | Gegevens worden veilig opgeslagen in Keycloak en berichten versleuteld in een Cassandra-database. |
+| Gegevensminimalisatie en beperking van het doel | Verzamel alleen de gegevens die nodig zijn voor de diensten en worden alleen gebruikt voor het doel dat is aangegeven op het moment van verzameling. | ✅ | Momenteel worden alleen noodzakelijke gegevens verzameld en worden ze gebruikt voor het beoogde doel. |
+| Gegevensoverdracht | Als persoonlijke gegevens naar andere landen of organisaties overgedragen worden, zorg er dan voor dat ze ook voldoen aan de AVG. | ✅ | Er worden geen gegevens overgedragen. |
+
+
 ### Data
 
 #### Data verzameling
@@ -171,9 +184,87 @@ De chatberichten worden gebruikt om de gebruiker te laten zien wat er in de chat
 
 #### Toestemming voor data
 
-Om de data te kunnen gebruiken van de gebruikers, moeten deze hier eerst toestemming voor geven. Dit is gebruikelijk om te vragen bij het aanmaken van een account. De data die verzameld wordt 
+Om de data te kunnen gebruiken van de gebruikers, moeten deze hier eerst toestemming voor geven. Dit is gebruikelijk om te vragen bij het aanmaken van een account. Dit is momenteel nog niet geïmplementeerd in de applicatie. Wanneer de gebruiker al een account heeft en er data opgeslagen moet worden waarvoor nog geen toestemming is gegeven, dan zal opnieuw toestemming gevraagd moeten worden voor deze data.
+
+#### Data inzien
+
+Gebruikers moeten hun data kunnen opvragen en kunnen ontvangen binnen redelijke tijd. Dit is momenteel nog niet geïmplementeerd in de applicatie. Hiervoor zouden de gegevens in keycloak gexporteerd moeten worden en alle chatgesprekken van de gebruiker uit de database. 
+
+#### Data verwijderen
+
+Momenteel is het niet mogelijk voor de gebruikers om data te verwijderen. Dit is wel een vereiste van de AVG. Om dit te implementeren, moet er een functie komen die de data verwijdert uit de database. Dit kan bijvoorbeeld door een knop te maken in de front-end die de data verwijderd. 
+
+## Schaalbaarheid
+
+Om de applicatie schaalbaar te maken, is gekozen voor het gebruik van Kubernetes. Kubernetes is een open-source platform voor het automatiseren van het beheer van containerized applicaties. Alle onderdelen van dit project zijn gecontainerized en kunnen dus in Kubernetes draaien. De containers kunnen zelfstandig draaien, zonder afhankelijk te zijn van andere containers.
+
+Aangezien de containers onafhankelijk zijn van elkaar is het mogelijk om de applicaties te schalen door het aantal pods (instanties van de container) te verhogen of te verlagen op basis van de vraag. Dit kan automatisch gedaan worden door Kubernetes via de *Horizontal Pod Autoschaler*. Deze schaalt automatisch het aantal pods op basis van de CPU load en memory load zodra een vaste voorafopgestelde waarde wordt overschreden. 
+
+Er wordt horizontaal geschaald omdat:
+
+- **Het een betere kosten-efficiëntie geeft**: Het toevoegen van meer kleinere machines is vaak kostenefficiënter dan het upgraden naar een grotere, krachtigere machine.
+
+- **Het meer veerkracht geeft**: Indien een systeem bestaat uit vele kleinere machines (in het geval van Kubernetes, pods), dan kan het falen van één machine minder impact hebben op het totale systeem dan wanneer het systeem bestaat uit een paar zeer krachtige machines.
+
+- **Het zorgt voor meer Flexibiliteit**: Met horizontaal schalen kan gemakkelijk worden opgeschaald en afgeschaald op basis van de vraag. Dit is vooral nuttig voor workloads die fluctueren in de tijd. In Kubernetes kan de Horizontal Pod Autoscaler worden gebruikt om automatisch het aantal pods aan te passen op basis van de huidige belasting.
+
+- **Het zorgt voor een betere verdeling van het netwerkverkeer**: Horizontaal schalen zorgt voor een betere verdeling van het netwerkverkeer. In plaats van dat alle verzoeken naar één grote server gaan, worden ze verdeeld over meerdere kleinere servers. Hierdoor wordt de gebruikers capaciteit van het project ook groter.
+
+Alle pods krijgen genoeg resources om de applicatie te kunnen draaien. Deze resources zijn vantevoren vastgesteld, dus vindt er geen verticale schaling plaats.
+
+Kubernetes zorgt er verder nog voor dat de applciatie altijd blijft draaien, ook als er updates uitgevoerd worden voor bepaalde services. Dit wordt gedaan door middel van *rolling updates*. Dit houdt in dat er een nieuwe pod wordt aangemaakt met de nieuwe versie van de applicatie. Als deze pod draait, wordt de oude pod verwijderd. Hierdoor is de applicatie altijd beschikbaar.
+
+Ook zorgt Kubernetes ervoor dat wanneer een pod niet meer werkt zoals gehoopt (door bijvoorbeeld een crash), er een nieuwe instantie van de applicatie wordt aangemaakt. Dit wordt gedaan door middel van *liveness probes*. Dit zijn checks die worden uitgevoerd op de pod. Als de pod niet meer voldoet aan de checks, wordt de pod verwijderd en wordt er een nieuwe pod aangemaakt. Kubernetes regelt dit automatisch, dus er hoeft geen menselijke interactie plaats te vinden.
+
+### Messaging bij meerdere pods
+
+Om ervoor te zorgen dat een bericht niet vaker dan één keer verwerkt wordt, is er gebruik gemaakt van een message queue. De message queue die gebruikt wordt is RabbitMQ. Dit is een open source message broker die gebruikt wordt om berichten te verzenden en ontvangen. Door elk bericht  een uniek ID mee te geven, kan de message queue ervoor zorgen dat een bericht niet vaker dan één keer verwerkt wordt. Zodra een bericht er per ongeluk toch twee keer doorheen glipt, wordt het tweede bericht genegeerd aan de hand van het ID.
+
+Bij het opslaan van de berichten in de cassandra database is er nog een tweede check; cassandra kan namelijk door middel van *quorum* ervoor zorgen dat wanneer hetzelfde bericht meerdere keren wordt opgeslagen, maar nét verschillende waardes heeft de meerderheid wint. Dus in een overdreven voorbeeld waarbij er 3 berichten worden opgeslagen met de waardes `{"id": 1, "message": "Hello"}`, `{"id": 1, "message": "Hello"}` en `{"id": 1, "message": "Hello world"}`, dan zal de laatste waarde worden overschreven. Dit is omdat de meerderheid van de berichten dezelfde waarde `"message": "Hello"` heeft. Zo wordt er dus voorkomen dat er meerdere berichten met dezelfde ID worden opgeslagen.
+
+### Schaalbaarheid testen
+
+De schaalbaarheid wordt getest door middel van de tool [K6](https://k6.io/). Deze tool kan gebruikt worden om een bepaalde load te simuleren op de applicatie. Hierdoor kan er getest worden of de applicatie de load aankan. Als de ingestelde load te hoog is voor de pod en de drempelwaarde voor de CPU of geheugen overschreden wordt én er meerdere replica's gemaakt mogen worden van de pod, dan zal Kubernetes automatisch een nieuwe pod aanmaken. De load balancer kan de load dan verdelen over de pods, waardoor de applicatie de load aankan.
+
+De applicatie kan momenteel 20.000 gebruikers aan die de home pagina van de website bezoeken zonder een service te moeten opschalen. Dit is getest door middel van K6. De test is te vinden in de map `k6-tests`, met de bestandsnaam `minimum.js`. Door middel van de file `scalability.js` kan getest worden of de services schaalbaar zijn, omdat deze een load simuleert van 30.000 gebruikers die 5 minuten lang de website bezoeken. De load neemt daarna af naar 2.000 gebruikers, om kubernetes de tijd te geven om de pods weer af te schalen waar nodig.
+
+#### Cassandra
+
+Cassandra wordt buiten het kubernetes cluster gelaten, omdat Cassandra opzichzelf al goed kan schalen. Het is een gedistribueerde database, wat betekent dat het al goed kan schalen over meerdere machines. Het is dus niet nodig om Cassandra in een kubernetes cluster te draaien. Daarbij is het gebruikelijk om kubernetes pods stateless te houden, wat betekent dat er geen data opgeslagen wordt in de pods. Dit is bij Cassandra wel het geval, dus daarom wordt Cassandra buiten het kubernetes cluster gehouden.
+
+## Security
+
+1. **Authenticatie en autorisatie**: Om de autenticatie en authorisatie te regelen in het project, heb ik Keycloak toegevoegd. Keycloak heeft OAuth geïmplementeerd in de applicatie en voorkomt hiermee dus vaak voorkomende veiligheidsrisico's, zoals die benoemd worden in de top 10 van OWASP. Keycloak is open-source en is dus volledig gratis om te kunnen gebruiken.
+2. **Opslag van gebruikersdata**: Gebruikersdata worden opgeslagen in Keycloak, dat draait in een Kubernetes-cluster. Chatberichten worden versleuteld opgeslagen in een Cassandra database. Voor uitgebreide uitleg over de opgeslagen data, zie [GDPR](#gpdr). 
+3. **Versleuteling van berichten**: Toepassing van semi-end-to-end-encryptie voor chatberichten.
+4. **Firewall**: Hoewel er geen specifieke firewall wordt genoemd, biedt Kubernetes een aantal netwerkbeleidsopties die kunnen functioneren als een firewall op een per-plugin- of per-omgevingsbasis.
+5. **Monitoring**: Monitoring wordt uitgevoerd met Prometheus en Lens. In Lens is te zien hoe de applicatie presteert en of hier opvallend veel activiteit is. Ook is het mogelijk om hier de logs per pod in te kunnen zien, om zo verdachte activiteit te kunnen waarnemen.
+
+
+## Testen
+
+Voor dit project heb ik endpoint tests geschreven, met als doel om de input en output van de applicatie te testen. Dit is vergelijkbaar met wat er gevraagd wordt vanuit andere containers, hiermee kan de flow van de data gecontroleerd worden.
+
 
 ## Cloud Services
+
+### Potentiële nadelen van de Cloud
+
+- **Kosten:** Hoewel cloudproviders doorgaans pay-as-you-go prijsmodellen hanteren, kunnen de kosten snel oplopen naarmate het gebruik toeneemt. Dit viel mij vooral op toen ik de calculator van AWS bekeek. Het omhoogschalen van de applicatie leidde al snel in een verdubbeling van de kosten.
+- **Afhankelijkheid van de provider (vendor lock-in):** Het kan moeilijk en tijdrovend zijn om van provider te veranderen of om systemen terug te brengen naar een lokale serveromgeving bij het bedrijf zelf.
+- **Beveiliging en privacy:** Het delen van persoonlijke/gevoelige informatie met een derde partij brengt altijd een risico met zich mee. Hoewel deze veel beveilingsmaatregelen treffen, is het nooit 100% veilig. Ook moet er rekening gehouden worden met GDPR wetgeving; als er geen servers in Europa aanwezig zijn, maar er wel persoonlijke/gevoelige informatie wordt opgeslagen van Europese burgers, dan is dit in overtreding van de wet.
+- **Potentiële downtime:** Bij ernstige storingen kunnen diensten tijdelijk onbeschikbaar zijn, waar je als bedrijf geen controle over hebt. Dit kan leiden tot verlies van inkomsten en reputatieschade..
+
+### Voordelen van de Cloud buiten lokale deployment
+
+- **Schaalbaarheid:** Cloudproviders maken het eenvoudig om resources te schalen om aan de vraag te voldoen.
+- **Herstel na noodgevallen:** Veel cloudproviders bieden services voor disaster recovery en gegevensback-up.
+- **Innovatie:** Cloudproviders bieden toegang tot de nieuwste technologieën, waardoor en snel gebruik gemaakt kan worden van nieuwe processoren en andere hardware.
+- **Beheer:** Cloudproviders nemen veel van de taken van infrastructuurbeheer uit handen.
+
+Het is mogelijk om de server volledig in eigen beheer te hebben en lokaal te draaien, maar de kosten hiervan zijn bij de aanschaf en onderhoud snel hoog. Om te kunnen schalen moet er genoeg rekenkracht aanwezig zijn vóór de piekbelasting plaatsvindt. Als deze er niet is, dan kan de applicatie niet schalen om de piekbelasting volledig aan te kunnen. Dit houdt dus in dat wanneer er niet veel vraag is naar de applicatie er dus veel hardware ongebruikt/idle blijft. Het infrastructuur team moet dan ook de hardware onderhouden en up-to-date houden. Dit is een tijdrovende taak en kan veel geld kosten. Daarom is het senl goedkoper om de applicatie in de cloud te draaien, omdat de cloudprovider de hardware onderhoudt en up-to-date houdt.
+
+Als kosten niet de belangrijkste factor zijn, maar wel bijvoorbeeld veiligheid dan wordt het misschien interessanter om de hardware in-house te hebben.
 
 ### Benodigdheden
 
