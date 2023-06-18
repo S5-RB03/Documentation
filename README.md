@@ -17,25 +17,23 @@ Voor dit project gaan we ervan uit dat iedereen klaar is met Facebook en omdat H
 
 ## Functionele eisen
 
-**Profiel(pagina)**
--	De gebruiker moet een account kunnen aanmaken.
--	De gebruiker moet een account kunnen verwijderen.
--	De gebruiker moet persoonlijke gegevens kunnen aanpassen.
--	De gebruiker moet een profielfoto kunnen uploaden.
--	De gebruiker moet een profielfoto kunnen verwijderen.
+| Eisen                                                           | Check | Oplossing |
+|-----------------------------------------------------------------|:-----:|-----------|
+| De gebruiker moet een account kunnen aanmaken.                  | :white_check_mark:       |     De gebruiker kan door middel van Keycloak een account aanmaken.      |
+| De gebruiker moet een account kunnen verwijderen.               |  :x:      |           |
+| De gebruiker moet persoonlijke gegevens kunnen aanpassen.       |  :x:      |           |
+| De gebruiker moet een profielfoto kunnen uploaden.              |  :x:      |           |
+| De gebruiker moet een profielfoto kunnen verwijderen.           |   :x:     |           |
+| De gebruiker moet een vriend kunnen toevoegen.                  |   :x:     |           |
+| De gebruiker moet een vriend kunnen verwijderen.                |   :x:     |           |
+| De gebruiker moet een lijst met vrienden kunnen bekijken.       |  ~     |    De gebruiker kan momenteel alle andere gebruikers zien en hiermee chatten.       |
+| De gebruiker moet een chatgeschiedenis kunnen bekijken.         |  :white_check_mark:     |    Als de gebruikers eerder chatberichten met elkaar hebben uitgewisseld, dan zijn deze te zien in de chat.       |
+| De gebruiker moet een chatgeschiedenis kunnen verwijderen.      |  :x:     |           |
+| De gebruiker moet een chatgeschiedenis kunnen downloaden.       | :x:      |           |
+| De gebruiker moet een chatgeschiedenis kunnen zoeken.           |  :x:     |           |
+| De gebruiker moet kunnen chatten met andere gebruikers.         |  :white_check_mark:     |   De gebruiker kan berichtjes sturen naar de andere gebruiker        |
+| De gebruiker moet kunnen zien of een andere gebruiker online is.|   :x:    |           |
 
-**Vrienden**
--	De gebruiker moet een vriend kunnen toevoegen.
--	De gebruiker moet een vriend kunnen verwijderen.
--	De gebruiker moet een lijst met vrienden kunnen bekijken.
-
-**Chat**
--	De gebruiker moet een chatgeschiedenis kunnen bekijken.
--	De gebruiker moet een chatgeschiedenis kunnen verwijderen.
--	De gebruiker moet een chatgeschiedenis kunnen downloaden.
--	De gebruiker moet een chatgeschiedenis kunnen zoeken.
--	De gebruiker moet kunnen chatten met andere gebruikers.
--   De gebruiker moet kunnen zien of een andere gebruiker online is.
 
 ## Software kwaliteit
 Voor dit project zal de ISO 25010 standaard worden gebruikt. ISO 25010 is een internationale standaard voor software kwaliteit, daardoor zou deze standaard voor iedere (goede) developer bekend moeten zijn en is het verstandig om deze standaard aan te houden. De standaard is opgebouwd uit 8 kwaliteitsaspecten. Deze aspecten zijn:
@@ -48,29 +46,21 @@ Op basis van deze aspecten, is het mogelijk om goede niet functionele eisen te f
 
 ## Niet functionele eisen
 
-**Prestaties**
--	Zodra een gebruiker de chathistorie wil bekijken, moet de chatgeschiedenis voor zover de gebruiker kan zien binnen één seconden geladen zijn. Eventuele oudere historie kan later opgehaald worden
--	Zodra een gebruiker een bericht stuurt, moet deze binnen één seconden aankomen bij de ontvanger.
--	Gebruikers moeten geen verschil in snelheid merken tussen spits- en daluren van de applicatie.
+| Eisen                                                                                      | Check | Oplossing |
+|-------------------------------------------------------------------------------------------|:-----:|-----------|
+| Zodra een gebruiker de chathistorie wil bekijken, moet de chatgeschiedenis binnen één seconden geladen zijn. |  :white_check_mark:      |    Door ervoor te zorgen dat slechts de laatste 25 berichten opgehaald worden, is het mogelijk om de applicatie de tijd te gunnen om nieuwe GET requests te doen naar de chatservice. Hiermee wordt de load op verschillende services in het project laag gehouden en wordt alleen data opgehaald die nodig is. Zodra de gebruiker oudere berichten wil binnenhalen, zal er dus een nieuwe GET request gedaan moeten worden voor de eerst volgende 25 recente berichten. Dit maakt het mogelijk om, voor zover de gebruiker kan zien, alle chatberichten binnen te halen binnen één seconde.       |
+| Zodra een gebruiker een bericht stuurt, moet deze binnen één seconden aankomen bij de ontvanger.              | :white_check_mark:       |    Kubernetes zorgt ervoor dat er altijd genoeg rekenkracht aanwezig is om de berichten te kunnen opslaan en ophalen. Zodra er niet meer genoeg rekenkracht over is, worden er nieuwe pods van de service opgestart om alle vraag tijdig te kunnen verwerken.       |
+| Gebruikers moeten geen verschil in snelheid merken tussen spits- en daluren van de applicatie.                 |   :white_check_mark:    |   Zodra er veel vraag is naar de applicatie, is het door Kubernetes mogelijk om op te schalen om zo de vraag aan te kunnen. Er wordt tijdig opgeschaald zodat de gebruiker geen verandering in de werking van de applicatie kan merken op ieder moment van de dag.        |
+| De applicatie moet schaalbaar zijn wanneer er meer of minder vraag komt naar de applicatie.                   |  :white_check_mark:     |     Door Kubernetes is het mogelijk om iedere service afzonderlijk van elkaar te kunnen schalen. Dit maakt het mogelijk om bottlenecks in het systeem te verminderen door meerdere instanties van de serices te laten draaien wanneer nodig. Zodra de vraag laag genoeg wordt, is het mogelijk om deze overtollige instanties van de serices af te schalen.      |
+| De applicatie moet een piekbelasting van minimaal 20.000 live gebruikers aankunnen.                            |  :white_check_mark:     |     De piekbelasting van gebruikers die de hoofdpagina willen bezoeken is getest met K6. De resources zijn voor iedere service zo afgesteld dat ze nét genoeg hardware ter beschikking hebben zonder te moeten schalen. Dit zorgt ervoor dat er dus plotseling 20.000 gebruikers gebruik kunnen maken van de service, zonder dat deze moeten wachten tot de applicatie is opgeschaald.      |
+| Alle chatberichten tussen gebruikers moeten end-to-end versleuteld zijn.                                       |   ~    |     De berichten worden in de front-end versleuteld, maar momenteel gebeurt dit nog met een vaste encryption key. Hierdoor is het dus niet Volledig end-to-end encryptie, maar een soort 'light' variant. Om volledig end-to-end encrypted te kunnen zijn zou de device key van de gebruikers gebruikt moeten worden om te kunnen encrypten. Aangezien deze applicatie web-based is, is dat helaas niet mogelijk.      |
+| Applicatie moet beschermd zijn tegen de top 10 van OWASP.                                                       |  :white_check_mark:     |      Door middel van o.a. Keycloak wordt de applicatie beschermd tegen de top 10 van OWASP.     |
+| De applicatie moet een uptime hebben van 99,9% per jaar.                                                        |  ~    |  Dit valt momenteel niet te testen, omdat de applicatie niet op een server maar lokaal draait. In theorie zou de applicatie een uptime van 99,9% per jaar moeten kunnen halen, omdat de meeste Cloud Providers een uptime van 99,95% aanbieden. In combinatie met hoe Kubernetes is ingesteld zou deze uptime behaalbaar moeten zijn.          |
+| Downtime van een crash mag maximaal 5 minuten duren tijdens een probleem.                                       |  :white_check_mark:      |     Zodra Kubernetes/de horizontal pod autoscaler merkt dat de pod niet meer werkt zoals behoren, zal deze een nieuwe instantie creëeren. Deze instanties zijn vaak binnen 5 minuten opgestart en klaar om gegevens te kunnen verwerken       |
+| Documentatie moet voldoen aan de OpenAPI specificatie.                                                           |    :white_check_mark:     |   De API's geschreven voor Sevyh bevatten allemaal een OpenAPI specificatie, waardoor het dus voor iedere developer mogelijk zou moeten zijn om de documentatie te van de API's te kunnen begrijpen.        |
+| Over elk component van de applicatie moet documentatie te vinden zijn met de structuur en de gemaakte keuzes.  |    :white_check_mark:    |    De keuzes voor elke component zijn te vinden onder het kopje [Tech stack](#tech-stack) in dit document.       |
+| Applicatie voldoet aan lokale regelgeving in de Europese Unie (GDPR).                                           |   ~    |     De applicatie voldoet niet aan alle onderdelen van GDPR, de uitleg hiervoor is te vinden onder het kopje [GDPR](#gpdr)      |
 
-**Schaalbaarheid**
--	De applicatie moet schaalbaar zijn wanneer er meer of minder vraag komt naar de applicatie.
--	De applicatie moet een piekbelasting van minimaal 20.000 live gebruikers aankunnen.
-
-**Beveiliging**
--	Alle chatberichten tussen gebruikers moeten end-to-end versleuteld zijn.
--	Applicatie moet beschermd zijn tegen de top 10 van OWASP.
-
-**Betrouwbaarheid en beschikbaarheid**
--	De applicatie moet een uptime hebben van 99,9% per jaar. Dit vertaalt in een maximale downtime van 8,77 uur per jaar of 1,44 minuten per dag.
--	Downtime van een crash mag maximaal 5 minuten duren tijdens een probleem.
-
-**Onderhoudbaarheid**
--	Documentatie moet voldoen aan de OpenAI specificatie.
--	Over elk component van de applicatie moet documentatie te vinden zijn met de structuur en de gemaakte keuzes.
-
-**Regelgeving**
--	Applicatie voldoet aan lokale regelgeving in de Europese Unie (GDPR).
 
 ## Tech stack
 
