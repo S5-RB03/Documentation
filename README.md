@@ -330,6 +330,35 @@ Digital Ocean geeft in dit geval de meeste mogelijkheden om te schalen omdat er 
 
 De feature *High Availablity* past goed bij de NFR's 'De applicatie moet een uptime hebben van 99,9% per jaar. Dit vertaalt in een maximale downtime van 8,77 uur per jaar of 1,44 minuten per dag.' en 'Gebruikers moeten geen verschil in snelheid merken tussen spits- en daluren van de applicatie.', maar komt wel met een stevige prijs.
 
+### Function as a Service
+
+Function as a Service (FaaS), of serverless computing. "Serverless betekent niet dat er geen servers meer aan te pas komen. Wel betekent het dat gebruikers van FaaS kunnen programmeren (en andere taken) kunnen volbrengen, zonder zorgen over het inrichten en onderhouden van een server."[Axxius (z.d.)](https://axxius.nl/kennisbank/cloud-begrippen/faas-functions-as-a-service/)
+
+**De voordelen van FaaS**
+1. *Kosteneffectief* - Je betaalt alleen voor de tijd dat de functie draait. Als de functie niet draait, betaal je ook niet [(Monocello, 2020)](https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/). Dit in tegenstelling tot een server waar je altijd voor betaalt, ook als deze niet gebruikt wordt.
+2. *Schaalbaar* - De functies kunnen automatisch schalen, waardoor er geen downtime is en de gebruikers geen verschil in snelheid merken tussen spits- en daluren van de applicatie. Hiervoor hoeft niets ingesteld te worden door een developer, dit regelt de cloud provider [(Monocello, 2020)](https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/).
+3. *Geen ingewikkelde deployment* - De functies worden automatisch gedeployed, het is dus niet nodig om een CI/CD pipeline op te zetten. Dit scheelt tijd en geld.
+4. *Ingebouwde monitoring* - De cloud provider biedt ingebouwde monitoring aan, waardoor het niet nodig is om zelf een monitoring systeem op te zetten.
+
+**De nadelen van FaaS**
+
+Ondanks de aanzienlijke voordelen, zijn er een paar overwegingen en mogelijke trade-offs bij het gebruik van FaaS:
+
+1. *Vendor lock-in* - Als je eenmaal een FaaS-provider hebt gekozen, is het moeilijk om over te stappen naar een andere provider. Dit komt omdat de code specifiek is voor de provider en niet zomaar overgezet kan worden naar een andere provider. Dit is een belangrijk punt om rekening mee te houden, omdat het een grote impact kan hebben op de toekomst van de applicatie [(Monocello, 2020)](https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/). 
+2. *Testen* - Het is moeilijk om de functies te testen, omdat ze niet lokaal gedraaid kunnen worden. Dit maakt het lastig om de functies te testen en te debuggen. Uit ervaring bleek dat het vinden van een probleem en het oplossen hiervan meer tijd kostte dan bij een applicatie die lokaal gedraaid kon worden.
+3. *Cold Starts* - Als een functie een tijdje niet gebruikt is, moet deze opnieuw opgestart worden. Dit kan een paar seconden duren, waardoor de gebruiker een paar seconden moet wachten voordat de functie klaar is. Dit is niet wenselijk voor een applicatie die snel moet zijn. Dit kan opgelost worden door de functies warm te houden, maar dit kost wel geld. [(Monocello, 2020)](https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/).
+4. *Kosten* - De kosten kunnen onverwacht hoog oplopen als de functies niet goed geoptimaliseerd zijn. Dit komt omdat de functies per milliseconde afgerekend worden. Als de functies niet goed geoptimaliseerd zijn, kan dit dus veel geld kosten [(AWS, z.d.)](https://aws.amazon.com/lambda/pricing/).
+
+#### FaaS of Containers?
+
+Een project hoeft niet alleen te bestaan uit een van de twee. Zo kan het interessanter zijn om een container te gebruiken voor een deel van de applicatie wat veel tijd en rekenkracht nodig heeft en FaaS voor een gedeelte wat weinig tijd en rekenkracht nodig heeft. In dit project wordt het weerbericht opgehaald via een FaaS functie, dit is een eenvoudige en snelle handeling waar dus niet veel rekenkracht voor nodig is. Als hiervoor een complete development omgeving voor opgezet moet worden inclusief CI/CD pipeline, is dit veel werk voor een kleine handeling. Het is dus interessanter om hiervoor een FaaS functie te gebruiken.
+
 ## Bronnen
 
 [ISO 25010. (z.d.). https://iso25000.com/index.php/en/iso-25000-standards/iso-25010](https://iso25000.com/index.php/en/iso-25000-standards/iso-25010)
+
+[Axxius (z.d.). (https://axxius.nl/kennisbank/cloud-begrippen/faas-functions-as-a-service/](https://axxius.nl/kennisbank/cloud-begrippen/faas-functions-as-a-service/)
+
+[Monocello (2020, maart 3) https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/](https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/)
+
+[1AWS (z.d.) https://aws.amazon.com/lambda/pricing/](https://aws.amazon.com/lambda/pricing/)
