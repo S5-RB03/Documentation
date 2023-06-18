@@ -8,12 +8,20 @@
 4. [Niet functionele eisen](#niet-functionele-eisen)
 5. [Tech stack](#tech-stack)
 6. [Architectuur](#architectuur)
-5. [Bronnen](#bronnen)
+7. [Monitoring](#monitoring)
+8. [GDPR](#gdpr)
+9. [Schaalbaarheid](#schaalbaarheid)
+10. [Security](#security)
+11. [Testen](#testen)
+12. [Cloud Services](#cloud-services)
+13. [Bronnen](#bronnen)
 
 
 ## Inleiding
 
 Voor dit project gaan we ervan uit dat iedereen klaar is met Facebook en omdat Hyves zo lekker nostalgisch is, verlangen we terug naar die tijd. Maar in plaats van dat alleen Nederlanders de applicatie weten te vinden, weten onze ze aan de andere kant van de oceaan in de Verenigde Staten ook deze applicatie te vinden! 
+
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Functionele eisen
 
@@ -34,6 +42,7 @@ Voor dit project gaan we ervan uit dat iedereen klaar is met Facebook en omdat H
 | De gebruiker moet kunnen chatten met andere gebruikers.         |  :white_check_mark:     |   De gebruiker kan berichtjes sturen naar de andere gebruiker        |
 | De gebruiker moet kunnen zien of een andere gebruiker online is.|   :x:    |           |
 
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Software kwaliteit
 Voor dit project zal de ISO 25010 standaard worden gebruikt. ISO 25010 is een internationale standaard voor software kwaliteit, daardoor zou deze standaard voor iedere (goede) developer bekend moeten zijn en is het verstandig om deze standaard aan te houden. De standaard is opgebouwd uit 8 kwaliteitsaspecten. Deze aspecten zijn:
@@ -43,6 +52,8 @@ Voor dit project zal de ISO 25010 standaard worden gebruikt. ISO 25010 is een in
 </p>
 
 Op basis van deze aspecten, is het mogelijk om goede niet functionele eisen te formuleren. Deze zijn te vinden in de paragraaf [Niet functionele eisen](#niet-functionele-eisen). Niet alle aspecten zijn even belangrijk voor dit project. Daarom is er een keuze gemaakt welke aspecten wel en niet belangrijk zijn voor dit project.
+
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Niet functionele eisen
 
@@ -61,8 +72,9 @@ Op basis van deze aspecten, is het mogelijk om goede niet functionele eisen te f
 | Over elk component van de applicatie moet documentatie te vinden zijn met de structuur en de gemaakte keuzes.  |    :white_check_mark:    |    De keuzes voor elke component zijn te vinden onder het kopje [Tech stack](#tech-stack) in dit document.       |
 | Applicatie voldoet aan lokale regelgeving in de Europese Unie (GDPR).                                           |   ~    |     De applicatie voldoet niet aan alle onderdelen van GDPR, de uitleg hiervoor is te vinden onder het kopje [GDPR](#gpdr)      |
 
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
-## Tech stack
+## Tech Stack
 
 **Front-end** 
 Voor de front-end wordt Vue 3 gebruikt. De voornaamste reden is omdat ik zelf vaak Laravel gebruik en deze regelmatig in combinatie met vue wordt gedraaid. Daarnaast is het een framework dat ik graag wil leren kennen, omdat het veel wordt gebruikt in de industrie, dus het is niet verkeerd om hier meer kennis van op te doen. In het groepsproject wordt ook met Vue gewerkt, dus het is handig om hier extra mee te oefenen.
@@ -71,10 +83,12 @@ Voor de front-end wordt Vue 3 gebruikt. De voornaamste reden is omdat ik zelf va
 Voor de back-end is Java met het framework Spring Boot gebruikt. Met zowel Java als Spring Boot heb ik al enige ervaring. Dit is mij vorige keer goed bevallen, dus hier wil ik mee doorgaan. Ook Java met Spring Boot wordt vaak gebruikt, dus het is een goede toevoeging voor mijn portfolio.
 
 **Databases**
-Voor de databases heb ik Cassandra gebruikt voor de chatgeschiedenis en mediametadata. Cassandra is een NoSQL database die goed schaalbaar is en snel is.
+Voor de databases heb ik Cassandra gebruikt voor de chatgeschiedenis en mediametadata. Dit is een NoSQL-database die bekend staat om zijn goede schaalbaarheid en snelheid, ideaal voor chatgeschiedenis en mediametadata [(DataStax, 2021)](https://www.datastax.com/nosql-databases).
 
 **Messaging**
 Voor messaging heb ik RabbitMQ gebruikt. Dit is een message broker die gebruik maakt van het AMQP protocol. Dit protocol is een open standaard voor messaging. Daarbij is het onafhankelijk van de rest van de techstack omdat het overal mee kan werken. RabbitMQ is een veelgebruikte message broker, dus ook dit is een goede toevoeging voor mijn portfolio.
+
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Architectuur
 
@@ -83,8 +97,10 @@ Voor messaging heb ik RabbitMQ gebruikt. Dit is een message broker die gebruik m
 Om een snel idee te krijgen van hoe de applicatie eruit ziet, heb ik een C2 diagram gemaakt. Dit diagram laat zien waar de verschillende containers zich bevinden en welke met elkaar communiceren. In deze diagram zijn geolocaties en schaalbaarheid nog niet toegevoegd.
 
 <p align="center">
-    <img src="https://github.com/S5-RB03/Documentation/assets/73841047/e1c265bc-c612-4af5-8c03-49058d9bc9c4" alt="C2 diagram">
+    <img src="https://github.com/S5-RB03/Documentation/assets/73841047/e04e5718-8e2a-498d-ae46-93faee75ebd7" alt="C2 diagram">
 </p>
+
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Monitoring
 
@@ -137,9 +153,11 @@ Lens is een tool die het mogelijk maakt om een Kubernetes cluster te beheren en 
 ### Keycloak
 `docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e DB_VENDOR=h2 jboss/keycloak`
 
-## GPDR
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
-Om ervoor te zorgen dat de applicatie voldoet aan de GPDR, is er een GPDR checklist gemaakt. 
+## GDPR
+
+Om ervoor te zorgen dat de applicatie voldoet aan de GDRP, is er een GDPR checklist gemaakt. 
 
 | Regel | Oplossing | Controle | Opmerkingen |
 | ---- | -------- | :----: | -------- |
@@ -222,6 +240,8 @@ De applicatie kan momenteel 20.000 gebruikers aan die de home pagina van de webs
 
 Cassandra wordt buiten het kubernetes cluster gelaten, omdat Cassandra opzichzelf al goed kan schalen. Het is een gedistribueerde database, wat betekent dat het al goed kan schalen over meerdere machines. Het is dus niet nodig om Cassandra in een kubernetes cluster te draaien. Daarbij is het gebruikelijk om kubernetes pods stateless te houden, wat betekent dat er geen data opgeslagen wordt in de pods. Dit is bij Cassandra wel het geval, dus daarom wordt Cassandra buiten het kubernetes cluster gehouden.
 
+[ :rocket: Terug naar de top ](#inhoudsopgave)
+
 ## Security
 
 1. **Authenticatie en autorisatie**: Om de autenticatie en authorisatie te regelen in het project, heb ik Keycloak toegevoegd. Keycloak heeft OAuth geïmplementeerd in de applicatie en voorkomt hiermee dus vaak voorkomende veiligheidsrisico's, zoals die benoemd worden in de top 10 van OWASP. Keycloak is open-source en is dus volledig gratis om te kunnen gebruiken.
@@ -230,11 +250,13 @@ Cassandra wordt buiten het kubernetes cluster gelaten, omdat Cassandra opzichzel
 4. **Firewall**: Hoewel er geen specifieke firewall wordt genoemd, biedt Kubernetes een aantal netwerkbeleidsopties die kunnen functioneren als een firewall op een per-plugin- of per-omgevingsbasis.
 5. **Monitoring**: Monitoring wordt uitgevoerd met Prometheus en Lens. In Lens is te zien hoe de applicatie presteert en of hier opvallend veel activiteit is. Ook is het mogelijk om hier de logs per pod in te kunnen zien, om zo verdachte activiteit te kunnen waarnemen.
 
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Testen
 
 Voor dit project heb ik endpoint tests geschreven, met als doel om de input en output van de applicatie te testen. Dit is vergelijkbaar met wat er gevraagd wordt vanuit andere containers, hiermee kan de flow van de data gecontroleerd worden.
 
+[ :rocket: Terug naar de top ](#inhoudsopgave)
 
 ## Cloud Services
 
@@ -343,6 +365,8 @@ Ondanks de aanzienlijke voordelen, zijn er een paar overwegingen en mogelijke tr
 
 Een project hoeft niet alleen te bestaan uit een van de twee. Zo kan het interessanter zijn om een container te gebruiken voor een deel van de applicatie wat veel tijd en rekenkracht nodig heeft en FaaS voor een gedeelte wat weinig tijd en rekenkracht nodig heeft. In dit project wordt het weerbericht opgehaald via een FaaS functie, dit is een eenvoudige en snelle handeling waar dus niet veel rekenkracht voor nodig is. Als hiervoor een complete development omgeving voor opgezet moet worden inclusief CI/CD pipeline, is dit veel werk voor een kleine handeling. Het is dus interessanter om hiervoor een FaaS functie te gebruiken.
 
+[ :rocket: Terug naar de top ](#inhoudsopgave)
+
 ## Bronnen
 
 [ISO 25010. (z.d.). https://iso25000.com/index.php/en/iso-25000-standards/iso-25010](https://iso25000.com/index.php/en/iso-25000-standards/iso-25010)
@@ -352,3 +376,11 @@ Een project hoeft niet alleen te bestaan uit een van de twee. Zo kan het interes
 [Monocello (2020, maart 3) https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/](https://www.devprojournal.com/software-development-trends/pros-and-cons-of-function-as-a-service-faas/)
 
 [1AWS (z.d.) https://aws.amazon.com/lambda/pricing/](https://aws.amazon.com/lambda/pricing/)
+
+[DataStax. (2021). What is Apache Cassandra? Opgehaald van https://www.datastax.com/nosql-databases](https://www.datastax.com/nosql-databases)
+
+[Pivotal Software. (2021). Spring Boot. Opgehaald van https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
+
+[RabbitMQ. (2021). RabbitMQ protocols. Opgehaald van https://www.rabbitmq.com/protocols.html](https://www.rabbitmq.com/protocols.html)
+
+[ :rocket: Terug naar de top ](#inhoudsopgave)
