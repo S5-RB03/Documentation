@@ -70,7 +70,7 @@ Op basis van deze aspecten, is het mogelijk om goede niet functionele eisen te f
 | Downtime van een crash mag maximaal 5 minuten duren tijdens een probleem.                                       |  :white_check_mark:      |     Zodra Kubernetes/de horizontal pod autoscaler merkt dat de pod niet meer werkt zoals behoren, zal deze een nieuwe instantie creëeren. Deze instanties zijn vaak binnen 5 minuten opgestart en klaar om gegevens te kunnen verwerken       |
 | Documentatie moet voldoen aan de OpenAPI specificatie.                                                           |    :white_check_mark:     |   De API's geschreven voor Sevyh bevatten allemaal een OpenAPI specificatie, waardoor het dus voor iedere developer mogelijk zou moeten zijn om de documentatie te van de API's te kunnen begrijpen.        |
 | Over elk component van de applicatie moet documentatie te vinden zijn met de structuur en de gemaakte keuzes.  |    :white_check_mark:    |    De keuzes voor elke component zijn te vinden onder het kopje [Tech stack](#tech-stack) in dit document.       |
-| Applicatie voldoet aan lokale regelgeving in de Europese Unie (GDPR).                                           |   ~    |     De applicatie voldoet niet aan alle onderdelen van GDPR, de uitleg hiervoor is te vinden onder het kopje [GDPR](#gpdr)      |
+| Applicatie voldoet aan lokale regelgeving in de Europese Unie (GDPR).                                           |   ~    |     De applicatie voldoet niet aan alle onderdelen van GDPR, de uitleg hiervoor is te vinden onder het kopje [GDPR](#gdpr)      |
 
 [ :rocket: Terug naar de top ](#inhoudsopgave)
 
@@ -245,7 +245,7 @@ Cassandra wordt buiten het kubernetes cluster gelaten, omdat Cassandra opzichzel
 ## Security
 
 1. **Authenticatie en autorisatie**: Om de autenticatie en authorisatie te regelen in het project, heb ik Keycloak toegevoegd. Keycloak heeft OAuth geïmplementeerd in de applicatie en voorkomt hiermee dus vaak voorkomende veiligheidsrisico's, zoals die benoemd worden in de top 10 van OWASP. Keycloak is open-source en is dus volledig gratis om te kunnen gebruiken.
-2. **Opslag van gebruikersdata**: Gebruikersdata worden opgeslagen in Keycloak, dat draait in een Kubernetes-cluster. Chatberichten worden versleuteld opgeslagen in een Cassandra database. Voor uitgebreide uitleg over de opgeslagen data, zie [GDPR](#gpdr). 
+2. **Opslag van gebruikersdata**: Gebruikersdata worden opgeslagen in Keycloak, dat draait in een Kubernetes-cluster. Chatberichten worden versleuteld opgeslagen in een Cassandra database. Voor uitgebreide uitleg over de opgeslagen data, zie [GDPR](#gdpr). 
 3. **Versleuteling van berichten**: Toepassing van semi-end-to-end-encryptie voor chatberichten.
 4. **Firewall**: Hoewel er geen specifieke firewall wordt genoemd, biedt Kubernetes een aantal netwerkbeleidsopties die kunnen functioneren als een firewall op een per-plugin- of per-omgevingsbasis.
 5. **Monitoring**: Monitoring wordt uitgevoerd met Prometheus en Lens. In Lens is te zien hoe de applicatie presteert en of hier opvallend veel activiteit is. Ook is het mogelijk om hier de logs per pod in te kunnen zien, om zo verdachte activiteit te kunnen waarnemen.
